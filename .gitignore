@@ -1,0 +1,38 @@
+# === Node modules ===
+backend/node_modules/
+frontend/node_modules/
+
+# === Build outputs / compiled files ===
+backend/dist/
+frontend/build/
+
+# === Environment files ===
+backend/.env
+frontend/.env
+.env
+.env.local
+.env.*.local
+
+# === Logs ===
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === OS / Editor files ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# === TypeScript cache / Jest coverage ===
+*.tsbuildinfo
+coverage/
+
+# === Misc ===
+npm-debug.log*
+.pnp.*
+.lock-wscript
+
+# keep package-lock / yarn.lock committed (do NOT ignore lockfiles unless you intentionally want them ignored)
