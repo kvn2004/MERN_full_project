@@ -50,3 +50,20 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
 		throw new Error(`Error sending welcome email: ${error}`);
 	}
 };
+
+export const sendPasswordResetEmail = async (email: any, resetCode: string) => {
+  
+  try{
+    const response = await transporter.sendMail({
+			from: sender,
+			to: email,
+			subject: "Welcome to Care Her",
+			html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetCode}", resetCode),
+            text: "Welcome to Care Her"
+		});
+  }catch (error) {
+    console.error(`Error sending password reset email`, error);
+
+    throw new Error(`Error sending password reset email: ${error}`);
+  }
+}

@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
     password: String,
     gender: { type: String, enum: ["male", "female"] },
     verificationCode: String,
-    resetPasswordToken: String,
+    resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: Date,
     verificationCodeExpires: Date,
     isVerified: { type: Boolean, default: false }
