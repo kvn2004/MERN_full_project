@@ -6,7 +6,7 @@ import {
   VERIFICATION_EMAIL_TEMPLATE,
   WELCOME_TEMPLATE,
 } from "../templates/emailTemplates";
-const sender = '"Care Her" <hello@demomailtrap.co>'
+const sender = '"Care Her" <hello@demomailtrap.co>';
 export const sendVerificationEmail = async (
   email: string,
   verificationToken: string
@@ -32,38 +32,35 @@ export const sendVerificationEmail = async (
 };
 
 export const sendWelcomeEmail = async (email: string, name: string) => {
-	
+  try {
+    const response = await transporter.sendMail({
+      from: sender,
+      to: email,
+      subject: "Welcome to Care Her",
+      html: WELCOME_TEMPLATE({ userName: name }),
+      text: "Welcome to Care Her",
+    });
 
-	try {
-		const response = await transporter.sendMail({
-			from: sender,
-			to: email,
-			subject: "Welcome to Care Her",
-			html: WELCOME_TEMPLATE({ userName: name }),
-            text: "Welcome to Care Her"
-		});
+    console.log("Welcome email sent successfully", response);
+  } catch (error) {
+    console.error(`Error sending welcome email`, error);
 
-		console.log("Welcome email sent successfully", response);
-	} catch (error) {
-		console.error(`Error sending welcome email`, error);
-
-		throw new Error(`Error sending welcome email: ${error}`);
-	}
+    throw new Error(`Error sending welcome email: ${error}`);
+  }
 };
 
 export const sendPasswordResetEmail = async (email: any, resetCode: string) => {
-  
-  try{
+  try {
     const response = await transporter.sendMail({
-			from: sender,
-			to: email,
-			subject: "Welcome to Care Her",
-			html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetCode}", resetCode),
-            text: "Welcome to Care Her"
-		});
-  }catch (error) {
+      from: sender,
+      to: email,
+      subject: "Password Reset Request",
+      html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetCode),
+      text: "Password Reset Request",
+    });
+  } catch (error) {
     console.error(`Error sending password reset email`, error);
 
     throw new Error(`Error sending password reset email: ${error}`);
   }
-}
+};
