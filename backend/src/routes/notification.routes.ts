@@ -1,9 +1,17 @@
 import { Router } from "express";
-import { getNotifications, testNotification } from "../controllers/notification.controller";
+import {
+  createNotification,
+  getMyNotifications,
+  markAsRead,
+  deleteNotification,
+} from "../controllers/notification.controller";
+import { verifyToken } from "../middleware/verifyToken";
 
-const router = Router();
+const router =Router();
 
-router.get("/", getNotifications);
-router.post("/test", testNotification);
+router.post("/", verifyToken, createNotification);
+router.get("/", verifyToken, getMyNotifications);
+router.put("/:id/read", verifyToken, markAsRead);
+router.delete("/:id", verifyToken, deleteNotification);
 
 export default router;

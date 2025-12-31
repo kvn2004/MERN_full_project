@@ -1,13 +1,22 @@
 import { Request, Response } from "express";
 import Cycle from "../models/Cycle";
 import { log } from "console";
+import Notification from "../models/notification";
+import { createCycleAutoNotifications } from "../utils/cycleNotification.helper";
 
 export const addCycle = async (req: Request, res: Response) => {
   try {
     const { lastPeriodDate, cycleLength, periodDuration, symptoms, flowLevel } =
       req.body;
-    const userId = req.user; // Assuming userId is set in the request by authentication middleware
+    const user = req.user as any; // Assuming authentication middleware sets req.user
+    const userId =
+      typeof user === "string"
+        ? user
+        : (user && (user.id ?? user._id))?.toString();
+
     if (!userId) {
+      console.log({ message: "Unauthorized" });
+
       return res.status(401).json({ message: "Unauthorized" });
     }
     if (!lastPeriodDate || !cycleLength || !periodDuration) {
@@ -25,8 +34,14 @@ export const addCycle = async (req: Request, res: Response) => {
     });
 
     await cycle.save();
+    await createCycleAutoNotifications({
+      userId,
+      email: (user && user.email) || "",
+      lastPeriodDate,
+      cycleLength,
+    });
     return res.status(201).json({
-      message: "Cycle data added successfully",
+      message: "Cycle added & notifications scheduled successfully",
       cycle,
     });
   } catch (error) {

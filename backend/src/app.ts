@@ -6,6 +6,7 @@ import cycleRoutes from "./routes/cycle.routes";
 import partnerRoutes from "./routes/partner.routes";
 import notificationRoutes from "./routes/notification.routes";
 import cookieParser from "cookie-parser";
+import "./cron/notification.cron";
 
 
 const app = express();

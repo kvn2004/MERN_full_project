@@ -182,3 +182,81 @@ export const WELCOME_TEMPLATE = ({
 </body>
 </html>
 `;
+export const NOTIFICATION_EMAIL_TEMPLATE = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Period Tracker Notification</title>
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f6f7fb;
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      background: white;
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      text-align: center;
+      padding-bottom: 10px;
+      color: #6c63ff;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .content {
+      font-size: 15px;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 18px;
+      color: white;
+      background: #6c63ff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">❤️ Period Tracker Notification</div>
+
+    <div class="content">
+      <h3>{title}</h3>
+      <p>{message}</p>
+
+      <a class="btn" href="#" disabled>
+        Open App
+      </a>
+    </div>
+
+    <div class="footer">
+      This is an automated notification from Period Tracker.<br/>
+      Please do not reply to this email.
+    </div>
+  </div>
+</body>
+</html>
+`;
