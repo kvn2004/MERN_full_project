@@ -4,13 +4,12 @@ import User from "../models/User";
 import { sendUserNotificationEmail } from "../utils/sendEmail";
 
 cron.schedule("0 0 * * *", async () => {
-  console.log("Cron Running... Checking notifications");
+  console.log("Cron Running... Checking notifications globally");
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const nowUTC = new Date();
 
   const notifications = await Notification.find({
-    dateToNotify: { $lte: today },
+    dateToNotifyUTC: { $lte: nowUTC },
     isSent: false
   });
 
@@ -28,5 +27,5 @@ cron.schedule("0 0 * * *", async () => {
     await note.save();
   }
 
-  console.log("Notifications checked and emails sent");
+  console.log("Global notifications processed");
 });

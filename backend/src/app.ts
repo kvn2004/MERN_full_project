@@ -10,7 +10,10 @@ import "./cron/notification.cron";
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use(express.json()); // it parses incoming JSON requests and puts the parsed data in req.body 
 app.use(cookieParser());
 app.use("/auth", authRoutes);

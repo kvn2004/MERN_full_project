@@ -1,0 +1,35 @@
+
+import axios from 'axios';
+
+const axiosClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL, // Adjust if you have a different base URL
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Interceptor to add JWT token to requests
+axiosClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Interceptor to handle global errors (like 401 Unauthorized)
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      // Redirect to login if needed or handle in state
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosClient;
