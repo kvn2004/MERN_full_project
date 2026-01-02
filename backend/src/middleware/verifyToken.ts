@@ -1,20 +1,27 @@
-import  Jwt, { JwtPayload }  from "jsonwebtoken";
+import Jwt from "jsonwebtoken";
 
 export const verifyToken = (req: any, res: any, next: any) => {
-    const token = req.cookies.token;
+  try {
+    const token = req.cookies?.token;
+
     if (!token) {
-        return res.status(401).json({ error: "Unauthorized" });
-    }
-    try {
-        const decoded = Jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-        if (!decoded) {
-            return res.status(401).json({ error: "Invalid token" });
-        }
-        req.user = decoded.id;
-        next();
-    } catch (error) {
-        console.log("Error verifying token:", error);
-        return res.status(401).json({ error: "Invalid token" });
+      return res.status(401).json({ error: "Unauthorized - No token" });
     }
 
-}
+    const decoded = Jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as { id: string };
+
+    // ✅ FORCE attach user object
+    req.user = { id: decoded.id };
+
+    console.log("Decoded:", decoded);
+    console.log("req.user AFTER SET:", req.user);
+
+    next();
+  } catch (error) {
+    console.error("JWT verify failed:", error);
+    return res.status(401).json({ error: "Invalid token" });
+  }
+};

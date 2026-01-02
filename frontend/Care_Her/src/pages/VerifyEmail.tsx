@@ -22,15 +22,12 @@ const VerifyEmail: React.FC = () => {
   }, [dispatch]);
 
   const handleChange = (index: number, value: string) => {
-    // Only allow numbers
     if (value && !/^\d+$/.test(value)) return;
 
     const newCode = [...code];
-    // Use only the last character if user pasted or typed quickly
     newCode[index] = value.slice(-1);
     setCode(newCode);
 
-    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -53,7 +50,6 @@ const VerifyEmail: React.FC = () => {
     });
     setCode(newCode);
     
-    // Focus the last filled input or the first empty one
     const nextIndex = Math.min(pasteData.length, 5);
     inputRefs.current[nextIndex]?.focus();
   };
@@ -66,7 +62,6 @@ const VerifyEmail: React.FC = () => {
     }
   };
 
-  // Auto submit when all fields are filled
   useEffect(() => {
     if (code.every(digit => digit !== '') && !loading && !successMessage) {
       handleSubmit();
@@ -85,7 +80,8 @@ const VerifyEmail: React.FC = () => {
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-2">Email Verified!</h3>
             <p className="text-gray-600 mb-8">{successMessage}</p>
-            <Button onClick={() => navigate('/login')}>Go to Dashboard</Button>
+            {/* Redirect to onboarding flow after verification */}
+            <Button onClick={() => navigate('/onboarding')}>Complete Your Profile</Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -93,7 +89,6 @@ const VerifyEmail: React.FC = () => {
               {code.map((digit, index) => (
                 <input
                   key={index}
-                  // Fix: Ensure ref callback returns void to satisfy React types
                   ref={el => { inputRefs.current[index] = el; }}
                   type="text"
                   maxLength={1}
@@ -128,7 +123,6 @@ const VerifyEmail: React.FC = () => {
               <button 
                 type="button"
                 className="font-semibold text-soft-pink hover:underline"
-                onClick={() => {/* Implement resend logic if needed */}}
               >
                 Resend Code
               </button>

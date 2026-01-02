@@ -83,7 +83,7 @@ const Signup: React.FC = () => {
             </svg>
           </div>
           <p className="text-gray-600 mb-8">{successMessage}</p>
-          <Button onClick={() => navigate('/login')}>Return to Login</Button>
+          <Button onClick={() => navigate('/verify-email')}>Verify</Button>
         </div>
       </Layout>
     );

@@ -18,6 +18,7 @@ export const registerUser = async (req: Request, res: Response) => {
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      console.log("User already exists");  
       return res.status(400).json({ error: "User already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -55,25 +56,35 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const verifyEmail = async (req: Request, res: Response) => {
   const { code } = req.body;
+
   try {
     const user = await User.findOne({
       verificationCode: code,
       verificationCodeExpires: { $gt: new Date() },
     });
+
     if (!user) {
       return res
         .status(400)
         .json({ error: "Invalid or expired verification code" });
     }
+
+    // ✅ Mark user as verified
     user.isVerified = true;
     user.verificationCode = undefined;
     user.verificationCodeExpires = undefined;
     await user.save();
 
+    // ✅ AUTO LOGIN AFTER VERIFICATION
+    generateTokenAndSetCookie({ res }, user._id.toString());
+
+    // ✅ Send welcome email (non-blocking logic ideally)
     await sendWelcomeEmail(user.email as string, user.name as string);
+
+    // ✅ Return authenticated user
     res.status(200).json({
-      message: "Email verified successfully",
       success: true,
+      message: "Email verified and logged in successfully",
       user: {
         id: user._id,
         email: user.email,
@@ -82,10 +93,13 @@ export const verifyEmail = async (req: Request, res: Response) => {
         isVerified: user.isVerified,
       },
     });
+
   } catch (error) {
-    res.status(500).json({ error });
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
   }
 };
+
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;

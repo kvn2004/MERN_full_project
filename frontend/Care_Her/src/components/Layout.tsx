@@ -35,7 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
       </div>
       
       <p className="mt-8 text-center text-xs text-gray-400">
-        &copy; {new Date().getFullYear()} LunaFlow System. Your health, your flow.
+        &copy; {new Date().getFullYear()} CareHer System. Your health, your flow.
       </p>
     </div>
   );

@@ -6,6 +6,7 @@ import { createCycleAutoNotifications } from "../utils/cycleNotification.helper"
 
 export const addCycle = async (req: Request, res: Response) => {
   try {
+    console.log("req.body:", req.body);
     const { lastPeriodDate, cycleLength, periodDuration, symptoms, flowLevel } =
       req.body;
     const user = req.user as any; // Assuming authentication middleware sets req.user

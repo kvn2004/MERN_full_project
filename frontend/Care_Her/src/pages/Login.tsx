@@ -43,7 +43,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Layout title="Welcome Back" subtitle="Log in to LunaFlow to track your cycle">
+    <Layout title="Welcome Back" subtitle="Log in to CareHer to track your cycle">
       {error && (
         <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
           {error}
