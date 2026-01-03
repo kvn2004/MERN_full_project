@@ -1,4 +1,6 @@
 import axios from "axios";
+import { addNotification } from "../redux/uiSlice";
+import { store } from "../redux/store";
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -28,6 +30,22 @@ axiosClient.interceptors.response.use(
       localStorage.removeItem("token");
       // Redirect to login if needed or handle in state
     }
+    return Promise.reject(error);
+  }
+);
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const message = error.response?.data?.message || error.message || 'Something went wrong';
+    
+    // Automatically notify users of API errors
+    store.dispatch(addNotification({ type: 'error', message }));
+
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      // Could also trigger a redirect to login here if not on a login page
+    }
+    
     return Promise.reject(error);
   }
 );
