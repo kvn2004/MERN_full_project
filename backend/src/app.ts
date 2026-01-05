@@ -12,7 +12,7 @@ import chatRoutes from "./routes/chat.routes";
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL || "",
   credentials: true
 }));
 app.use(express.json()); // it parses incoming JSON requests and puts the parsed data in req.body 
