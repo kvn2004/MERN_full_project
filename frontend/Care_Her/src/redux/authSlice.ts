@@ -6,8 +6,8 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import axiosClient from "../api/axiosClient.ts";
-import type { AuthState, AuthResponse } from "../types.ts";
-import { addNotification, type NotificationType } from "./uiSlice.ts";
+import type { AuthState } from "../types.ts";
+import { addNotification, } from "./uiSlice.ts";
 
 const initialState: AuthState = {
   user: null,
