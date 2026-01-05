@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "concurrently \"ts-node-dev --respawn --transpile-only src/server.ts\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd ../frontend/Care_Her && npm run dev",
     "build": "tsc",
     "start": "node dist/server.js"
   },
@@ -36,6 +37,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.1",
     "@types/nodemailer": "^6.4.21",
+    "concurrently": "^9.2.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
