@@ -37,7 +37,7 @@ export const addCycle = async (req: Request, res: Response) => {
     await cycle.save();
     await createCycleAutoNotifications({
       userId,
-      email: (user && user.email) || "",
+      // email: (user && user.email) || "",
       lastPeriodDate,
       cycleLength,
     });
@@ -52,15 +52,46 @@ export const addCycle = async (req: Request, res: Response) => {
 };
 
 export const getMyCycles = async (req: Request, res: Response) => {
-  res.json({ message: "Get my cycles - TODO" });
+   try {
+    // ✅ Extract userId correctly
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    // ✅ Fetch cycles for this user only
+    const cycles = await Cycle.find({ userId })
+      .sort({ lastPeriodDate: -1 })
+      .select(
+        "lastPeriodDate cycleLength periodDuration createdAt updatedAt"
+      );
+      log("Fetched Cycles:", cycles);
+    return res.status(200).json({
+      success: true,
+      count: cycles.length,
+      data: cycles,
+    });
+  } catch (error) {
+    console.error("Get My Cycles Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
 };
 
 export const predictMyCycle = async (req: Request, res: Response) => {
   try {
-    const userId = req.user; // Assuming userId is set in the request by authentication middleware
+    const userId = req.user?.id;
+    console.log("User ID:", userId); // Assuming userId is set in the request by authentication middleware
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+    const today = new Date();
 
     // Get last 3 cycles
     const cycles = await Cycle.find({ userId: userId })
@@ -102,6 +133,19 @@ export const predictMyCycle = async (req: Request, res: Response) => {
     );
     const fertileWindowEnd = ovulationDate;
 
+    const diffDays = Math.round(
+      (today.getTime() - ovulationDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    let pregnancyChance = 0;
+
+    if (diffDays === 0) pregnancyChance = 30; // Ovulation day
+    else if (diffDays === -1) pregnancyChance = 27;
+    else if (diffDays === -2) pregnancyChance = 25;
+    else if (diffDays === -3) pregnancyChance = 20;
+    else if (diffDays === -4) pregnancyChance = 10;
+    else if (diffDays === -5) pregnancyChance = 5;
+    else pregnancyChance = 1; // Outside fertile window
+
     // Detect irregular cycles
     let isIrregular = false;
     if (cycles.length >= 2) {
@@ -110,6 +154,34 @@ export const predictMyCycle = async (req: Request, res: Response) => {
       const min = Math.min(...lengths);
       if (max - min >= 7) isIrregular = true; // 7+ days difference = irregular
     }
+    if (isIrregular) {
+      pregnancyChance = Math.round(pregnancyChance * 0.7);
+    }
+
+    console.log({
+      lastRecordedPeriod: latestCycle.lastPeriodDate,
+      averageCycleLength: Math.round(avgCycleLength),
+
+      nextPeriodDate,
+      periodEnd,
+
+      ovulationDate,
+      fertileWindowStart,
+      fertileWindowEnd,
+
+      isIrregular,
+      note: isIrregular
+        ? "Your cycle appears irregular. Predictions may be less accurate."
+        : "Cycle appears regular.",
+
+      pregnancyChance,
+      pregnancyChanceLabel:
+        pregnancyChance >= 25
+          ? "High"
+          : pregnancyChance >= 10
+          ? "Medium"
+          : "Low",
+    });
 
     return res.status(200).json({
       message: "Prediction generated successfully",
@@ -128,6 +200,14 @@ export const predictMyCycle = async (req: Request, res: Response) => {
         note: isIrregular
           ? "Your cycle appears irregular. Predictions may be less accurate."
           : "Cycle appears regular.",
+
+        pregnancyChance,
+        pregnancyChanceLabel:
+          pregnancyChance >= 25
+            ? "High"
+            : pregnancyChance >= 10
+            ? "Medium"
+            : "Low",
       },
     });
   } catch (error) {

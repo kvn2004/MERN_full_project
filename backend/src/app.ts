@@ -7,6 +7,7 @@ import partnerRoutes from "./routes/partner.routes";
 import notificationRoutes from "./routes/notification.routes";
 import cookieParser from "cookie-parser";
 import "./cron/notification.cron";
+import chatRoutes from "./routes/chat.routes";
 
 
 const app = express();
@@ -21,5 +22,7 @@ app.use("/user", userRoutes);
 app.use("/cycle", cycleRoutes);
 app.use("/partners", partnerRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/chat", chatRoutes);
+
 
 export default app;

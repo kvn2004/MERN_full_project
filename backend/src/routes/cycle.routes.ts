@@ -5,7 +5,7 @@ import { verifyToken } from "../middleware/verifyToken";
 const router = Router();
 
 router.post("/add", verifyToken, addCycle);
-router.get("/my", getMyCycles);
+router.get("/my", verifyToken, getMyCycles);
 router.get("/prediction", verifyToken, predictMyCycle);
 router.delete("/:id", deleteCycle);
 

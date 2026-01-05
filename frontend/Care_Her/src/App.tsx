@@ -12,6 +12,7 @@ import Onboarding from './pages/Onboarding';
 import { checkAuth } from './redux/authSlice';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from './redux/store';
+import History from './pages/History';
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -43,6 +44,14 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <History />
             </ProtectedRoute>
           }
         />
