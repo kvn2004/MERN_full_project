@@ -11,6 +11,7 @@ import {
 
 export const registerUser = async (req: Request, res: Response) => {
   const { email, password, name, gender } = req.body;
+  
   try {
     // TODO: register logic
     if (!email || !password || !name || !gender) {
@@ -146,6 +147,7 @@ export const logoutUser = async (req: Request, res: Response) => {
 };
 
 export const forgotPassword = async (req: Request, res: Response) => {
+  const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -162,7 +164,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     await sendPasswordResetEmail(
       email,
-      `http://localhost:5173/reset-password?code=${resetCode}`
+       `${FRONTEND_URL}/reset-password?code=${resetCode}`
     );
     res.status(200).json({
       message: "Password reset code sent",
