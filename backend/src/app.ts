@@ -13,7 +13,7 @@ const app = express();
 
 // Allowed origins
 const allowedOrigins = [
-  process.env.FRONTEND_URL || "http://localhost:5173", // production frontend URL
+  process.env.FRONTEND_URL, // production frontend URL
   "http://localhost:5173" // local dev
 ];
 
@@ -34,7 +34,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
+app.options("*", cors());
 app.use(express.json());
 app.use(cookieParser());
 
