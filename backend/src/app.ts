@@ -10,16 +10,34 @@ import "./cron/notification.cron";
 import chatRoutes from "./routes/chat.routes";
 
 const app = express();
+
+// Allowed origins
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:5173", // production frontend URL
+  "http://localhost:5173" // local dev
+];
+
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL || "http://localhost:5173"],
+    origin: function (origin, callback) {
+      // allow requests with no origin (like Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.use(express.json()); // it parses incoming JSON requests and puts the parsed data in req.body
+
+app.use(express.json());
 app.use(cookieParser());
+
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/cycle", cycleRoutes);
